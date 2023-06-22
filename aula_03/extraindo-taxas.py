@@ -4,7 +4,7 @@ from datetime import datetime
 
 with DAG(
   'Executando-notebook-etl',
-  start_date=datetime(2023, 6, 1), # Lembre de colocar para sua data, para não ultrapassar as 250 requisições
+  start_date=datetime(2023, 6, 1), # atenção para essa data de inicio para não ultrapassar seu limite de requisições
   schedule_interval="0 9 * * *",  # Todos os dias as 9 da manhã
   ) as dag_executando_notebook_extracao:
     
@@ -14,4 +14,10 @@ with DAG(
     job_id = "seu_job_id",
     notebook_params={"data_execucao": '{{data_interval_end.strftime("%Y-%m-%d")}}'}
   )
-    extraindo_dados
+    
+    transformando_dados = DatabricksRunNowOperator(
+    task_id = 'transformando-dados',
+    databricks_conn_id = 'databricks_default',
+    job_id = "seu_job_id",
+  )
+    extraindo_dados >> transformando_dados
