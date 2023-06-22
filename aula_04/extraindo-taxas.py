@@ -21,4 +21,10 @@ with DAG(
     job_id = "seu_job_id"
   )
     
-    extraindo_dados >> transformando_dados
+    enviando_relatorio = DatabricksRunNowOperator(
+    task_id = 'enviando-relatorio',
+    databricks_conn_id = 'databricks_default',
+    job_id = "seu_job_id"
+  )
+    
+    extraindo_dados >> transformando_dados >> enviando_relatorio
